@@ -15,20 +15,22 @@ footer {visibility: hidden;}
 header {visibility: hidden;}
 .stApp { background: #0a0a0a; }
 
+.block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 1100px !important; }
+
 .slide-card {
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
-    border-radius: 24px;
-    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    padding: 1.5rem 1.8rem;
     text-align: center;
-    margin: 1.5rem 0;
+    margin: 0.8rem 0;
 }
-.slide-emoji { font-size: 3.5rem; margin-bottom: 1rem; }
-.slide-title { font-size: 2rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.5rem; }
-.slide-subtitle { font-size: 1.1rem; color: #888; margin-bottom: 1.5rem; font-weight: 600; }
-.slide-text { font-size: 1rem; color: #b0b0b0; line-height: 1.8; text-align: left; white-space: pre-line; }
-.progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
-.question-text { font-size: 1.3rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; text-align: center; }
+.slide-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.slide-title { font-size: 1.6rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.3rem; }
+.slide-subtitle { font-size: 1rem; color: #888; margin-bottom: 1rem; font-weight: 600; }
+.slide-text { font-size: 0.95rem; color: #b0b0b0; line-height: 1.6; text-align: left; white-space: pre-line; }
+.progress-text { text-align: center; color: #666; font-size: 0.85rem; margin-bottom: 0.3rem; }
+.question-text { font-size: 1.2rem; color: #f0f0f0; font-weight: 600; line-height: 1.4; text-align: center; }
 
 /* Прогресс-бар */
 div[data-testid="stProgress"] > div > div { background-color: #3a3a3a !important; }
@@ -64,46 +66,52 @@ div[data-testid="stButton"] > button:focus {
 .sci-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
-    font-size: 0.9rem;
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
 }
 .sci-table th {
     background: #2a2a2a;
     color: #f0f0f0;
-    padding: 0.6rem;
+    padding: 0.45rem;
     text-align: left;
     border-bottom: 2px solid #3a3a3a;
 }
 .sci-table td {
-    padding: 0.6rem;
+    padding: 0.45rem;
     color: #b0b0b0;
     border-bottom: 1px solid #2a2a2a;
     text-align: left;
 }
-.sci-table tr:hover td { background: #222; }
 .sci-conclusion {
-    margin-top: 1.5rem;
-    padding: 1rem;
+    margin-top: 0.8rem;
+    padding: 0.7rem;
     background: #222;
     border-left: 3px solid #ffffff;
     color: #f0f0f0;
     font-style: italic;
     text-align: left;
     border-radius: 8px;
+    font-size: 0.85rem;
 }
 
 /* Цитаты */
+.quotes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 0.6rem;
+}
 .quote-block {
     background: #222;
     border-left: 3px solid #ffffff;
-    border-radius: 12px;
-    padding: 1.2rem 1.5rem;
-    margin: 1rem 0;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
     text-align: left;
+    margin: 0;
 }
-.quote-text { color: #d0d0d0; font-size: 1rem; line-height: 1.6; font-style: italic; margin-bottom: 0.6rem; }
-.quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.95rem; }
-.quote-role { color: #888; font-size: 0.85rem; }
+.quote-text { color: #d0d0d0; font-size: 0.85rem; line-height: 1.45; font-style: italic; margin-bottom: 0.4rem; }
+.quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.85rem; }
+.quote-role { color: #888; font-size: 0.75rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -120,7 +128,6 @@ if "user_name" not in st.session_state:
 if "user_class" not in st.session_state:
     st.session_state.user_class = ""
 
-# Общее число слайдов: 6 обычных + наука + цитаты = 8
 TOTAL_SLIDES = len(SLIDES) + 2
 
 # ===== СЛАЙДЫ =====
@@ -130,7 +137,6 @@ if st.session_state.stage == "slides":
     st.markdown(f'<p class="progress-text">Слайд {current + 1} з {TOTAL_SLIDES}</p>', unsafe_allow_html=True)
     st.progress((current + 1) / TOTAL_SLIDES)
 
-    # Слайды 0..5 — обычные
     if current < len(SLIDES):
         slide = SLIDES[current]
         st.markdown(f'<div class="slide-card">'
@@ -140,7 +146,6 @@ if st.session_state.stage == "slides":
                     f'<div class="slide-text">{slide["text"]}</div>'
                     f'</div>', unsafe_allow_html=True)
 
-    # Слайд 6 — наука
     elif current == len(SLIDES):
         sci = SCIENCE_SLIDE
         rows_html = "".join(
@@ -158,7 +163,6 @@ if st.session_state.stage == "slides":
                     f'<div class="sci-conclusion">💡 {sci["conclusion"]}</div>'
                     f'</div>', unsafe_allow_html=True)
 
-    # Слайд 7 — цитаты
     else:
         q = QUOTES_SLIDE
         quotes_html = "".join(
@@ -173,7 +177,7 @@ if st.session_state.stage == "slides":
                     f'<div class="slide-emoji">{q["emoji"]}</div>'
                     f'<div class="slide-title">{q["title"]}</div>'
                     f'<div class="slide-subtitle">{q["subtitle"]}</div>'
-                    f'{quotes_html}'
+                    f'<div class="quotes-grid">{quotes_html}</div>'
                     f'</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 1, 1])

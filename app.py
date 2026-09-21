@@ -30,13 +30,13 @@ header {visibility: hidden;}
 .progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
 .question-text { font-size: 1.3rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; text-align: center; }
 
-/* ПРОГРЕСС-БАР — БЕЛЫЙ */
-div[data-testid="stProgress"] > div > div > div > div { background-color: #ffffff !important; }
-div[data-testid="stProgress"] > div > div > div { background-color: #2a2a2a !important; }
-.stProgress > div > div > div > div { background-color: #ffffff !important; }
-.stProgress > div > div > div { background-color: #2a2a2a !important; }
+/* ПРОГРЕСС-БАР: пустая — серая, заполненная — белая */
+div[data-testid="stProgress"] > div > div { background-color: #3a3a3a !important; }
+.stProgress > div > div { background-color: #3a3a3a !important; }
+div[role="progressbar"] { background-color: #3a3a3a !important; }
+div[data-testid="stProgress"] > div > div > div { background-color: #ffffff !important; }
+.stProgress > div > div > div { background-color: #ffffff !important; }
 div[role="progressbar"] > div { background-color: #ffffff !important; }
-div[role="progressbar"] { background-color: #2a2a2a !important; }
 
 /* КНОПКИ — БЕЛЫЕ */
 .stButton > button,

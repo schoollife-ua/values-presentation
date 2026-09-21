@@ -2,14 +2,12 @@ import streamlit as st
 from content import SLIDES
 from questions import QUESTIONS, SCORES, RESULTS
 
-# --- Настройки страницы ---
 st.set_page_config(
     page_title="Що формує наші цінності?",
     page_icon="🎯",
     layout="centered",
 )
 
-# --- Кастомный CSS ---
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
@@ -35,7 +33,7 @@ header {visibility: hidden;}
 .slide-emoji { font-size: 4rem; margin-bottom: 1rem; }
 .slide-title { font-size: 2.4rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem; line-height: 1.2; }
 .slide-subtitle { font-size: 1.2rem; color: #A78BFA; margin-bottom: 1.5rem; font-weight: 600; }
-.slide-text { font-size: 1.05rem; color: #D1D5DB; line-height: 1.7; max-width: 600px; margin: 0 auto; }
+.slide-text { font-size: 1.05rem; color: #D1D5DB; line-height: 1.7; max-width: 600px; margin: 0 auto; white-space: pre-line; }
 
 .progress-text { text-align: center; color: #9CA3AF; font-size: 0.9rem; margin-bottom: 0.5rem; }
 
@@ -63,7 +61,6 @@ header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# --- Состояние ---
 if "stage" not in st.session_state:
     st.session_state.stage = "slides"
 if "slide" not in st.session_state:
@@ -72,6 +69,10 @@ if "q_index" not in st.session_state:
     st.session_state.q_index = 0
 if "answers" not in st.session_state:
     st.session_state.answers = []
+if "user_name" not in st.session_state:
+    st.session_state.user_name = ""
+if "user_class" not in st.session_state:
+    st.session_state.user_class = ""
 
 # =========================================================
 # ЭТАП 1: СЛАЙДЫ
@@ -107,14 +108,49 @@ if st.session_state.stage == "slides":
                 st.session_state.slide += 1
                 st.rerun()
         else:
-            if st.button("🚀 Пройти тест", use_container_width=True, type="primary"):
+            if st.button("🚀 Почати тест", use_container_width=True, type="primary"):
+                st.session_state.stage = "register"
+                st.rerun()
+
+# =========================================================
+# ЭТАП 2: РЕЄСТРАЦІЯ
+# =========================================================
+elif st.session_state.stage == "register":
+    st.markdown(f'<p class="progress-text">Крок 1 з 2 — Знайомство</p>', unsafe_allow_html=True)
+    st.progress(0.5)
+
+    st.markdown("""
+    <div class="slide-card">
+        <div class="slide-emoji">📝</div>
+        <div class="slide-title">Як тебе звати?</div>
+        <div class="slide-subtitle">Це потрібно, щоб показати твій результат</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    name = st.text_input("Твоє ім'я", value=st.session_state.user_name, placeholder="Наприклад: Марія")
+    klass = st.text_input("Клас", value=st.session_state.user_class, placeholder="Наприклад: 10-А")
+
+    col1, col2 = st.columns([1, 1])
+
+    with col1:
+        if st.button("← Назад", use_container_width=True):
+            st.session_state.stage = "slides"
+            st.rerun()
+
+    with col2:
+        if st.button("Почати тест →", use_container_width=True, type="primary"):
+            if name.strip() == "":
+                st.warning("Будь ласка, введи своє ім'я")
+            else:
+                st.session_state.user_name = name.strip()
+                st.session_state.user_class = klass.strip() if klass.strip() else "—"
                 st.session_state.stage = "quiz"
                 st.session_state.q_index = 0
                 st.session_state.answers = []
                 st.rerun()
 
 # =========================================================
-# ЭТАП 2: ТЕСТ
+# ЭТАП 3: ТЕСТ
 # =========================================================
 elif st.session_state.stage == "quiz":
     total_q = len(QUESTIONS)
@@ -148,7 +184,7 @@ elif st.session_state.stage == "quiz":
             st.rerun()
 
 # =========================================================
-# ЭТАП 3: РЕЗУЛЬТАТ
+# ЭТАП 4: РЕЗУЛЬТАТ
 # =========================================================
 elif st.session_state.stage == "result":
     totals = {"family": 0, "friends": 0, "school": 0, "society": 0}
@@ -164,7 +200,7 @@ elif st.session_state.stage == "result":
     st.markdown(f"""
     <div class="result-card">
         <div class="slide-emoji">{result['emoji']}</div>
-        <div class="slide-title">Твій результат</div>
+        <div class="slide-title">{st.session_state.user_name}, твій результат:</div>
         <div class="slide-subtitle">Тебе найбільше формують: {result['title']}</div>
         <div class="slide-text">{result['description']}</div>
     </div>
@@ -183,9 +219,6 @@ elif st.session_state.stage == "result":
         st.session_state.slide = 0
         st.session_state.q_index = 0
         st.session_state.answers = []
-        st.rerun()
-
-    if st.button("← Повернутись до презентації", use_container_width=True):
-        st.session_state.stage = "slides"
-        st.session_state.slide = 0
+        st.session_state.user_name = ""
+        st.session_state.user_class = ""
         st.rerun()

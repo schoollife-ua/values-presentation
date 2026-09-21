@@ -27,28 +27,34 @@ header {visibility: hidden;}
 .slide-title { font-size: 2rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.5rem; }
 .slide-subtitle { font-size: 1.1rem; color: #888; margin-bottom: 1.5rem; font-weight: 600; }
 .slide-text { font-size: 1rem; color: #b0b0b0; line-height: 1.8; text-align: left; white-space: pre-line; }
-
 .progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
 .question-text { font-size: 1.3rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; text-align: center; }
 
 /* ПРОГРЕСС-БАР — БЕЛЫЙ */
+div[data-testid="stProgress"] > div > div > div > div { background-color: #ffffff !important; }
+div[data-testid="stProgress"] > div > div > div { background-color: #2a2a2a !important; }
 .stProgress > div > div > div > div { background-color: #ffffff !important; }
 .stProgress > div > div > div { background-color: #2a2a2a !important; }
+div[role="progressbar"] > div { background-color: #ffffff !important; }
+div[role="progressbar"] { background-color: #2a2a2a !important; }
 
 /* КНОПКИ — БЕЛЫЕ */
-.stButton > button {
+.stButton > button,
+div[data-testid="stButton"] > button {
     background-color: #ffffff !important;
     color: #0a0a0a !important;
     border: 1px solid #ffffff !important;
     border-radius: 12px !important;
     font-weight: 600 !important;
 }
-.stButton > button:hover {
+.stButton > button:hover,
+div[data-testid="stButton"] > button:hover {
     background-color: #d0d0d0 !important;
     color: #0a0a0a !important;
     border-color: #d0d0d0 !important;
 }
-.stButton > button:focus {
+.stButton > button:focus,
+div[data-testid="stButton"] > button:focus {
     background-color: #ffffff !important;
     color: #0a0a0a !important;
     box-shadow: none !important;

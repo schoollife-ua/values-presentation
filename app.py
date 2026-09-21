@@ -30,6 +30,29 @@ header {visibility: hidden;}
 
 .progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
 .question-text { font-size: 1.3rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; text-align: center; }
+
+/* ПРОГРЕСС-БАР — БЕЛЫЙ */
+.stProgress > div > div > div > div { background-color: #ffffff !important; }
+.stProgress > div > div > div { background-color: #2a2a2a !important; }
+
+/* КНОПКИ — БЕЛЫЕ */
+.stButton > button {
+    background-color: #ffffff !important;
+    color: #0a0a0a !important;
+    border: 1px solid #ffffff !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+}
+.stButton > button:hover {
+    background-color: #d0d0d0 !important;
+    color: #0a0a0a !important;
+    border-color: #d0d0d0 !important;
+}
+.stButton > button:focus {
+    background-color: #ffffff !important;
+    color: #0a0a0a !important;
+    box-shadow: none !important;
+}
 </style>
 """, unsafe_allow_html=True)
 

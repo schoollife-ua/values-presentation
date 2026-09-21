@@ -1,81 +1,166 @@
-# Тексты слайдов. Меняй тут — код трогать не надо.
+import streamlit as st
+from content import SLIDES
+from questions import QUESTIONS, SCORES, RESULTS
 
-SLIDES = [
-    {
-        "emoji": "🎯",
-        "title": "Що формує наші цінності?",
-        "subtitle": "Сім'я, друзі, школа чи суспільство?",
-        "text": (
-            "Вітаю! 👋\n\n"
-            "Це коротка інтерактивна презентація про те, як формуються наші цінності. "
-            "Ми пройдемо 4 джерела впливу — сім'ю, друзів, школу і суспільство. "
-            "А потім ти пройдеш тест і дізнаєшся, що впливає на тебе найбільше.\n\n"
-            "Готовий? Натискай «Почати» 👇"
-        ),
-    },
-    {
-        "emoji": "👨‍👩‍👧",
-        "title": "Сім'я",
-        "subtitle": "Коріння, з якого все росте",
-        "text": (
-            "Саме в сім'ї ми вперше чуємо, що таке «добре» і «погано». "
-            "Тут закладаються базові цінності: чесність, повага, турбота, традиції.\n\n"
-            "Сім'я дає нам відчуття безпеки і приналежності. Вона формує те, "
-            "як ми ставимось до інших, як вирішуємо конфлікти, що вважаємо важливим.\n\n"
-            "Навіть коли ми виростаємо і відходимо від дому — голос батьків "
-            "залишається з нами. Він підказує, як чинити в складних ситуаціях."
-        ),
-    },
-    {
-        "emoji": "🧑‍🤝‍🧑",
-        "title": "Друзі",
-        "subtitle": "Ті, хто формує нашу ідентичність",
-        "text": (
-            "Друзі впливають на наші смаки, інтереси, стиль. З ними ми вчимося "
-            "довіряти, домовлятися і бути собою.\n\n"
-            "У підлітковому віці друзі стають особливо важливими. Ми шукаємо "
-            "прийняття, підтримки, розуміння. Саме в компанії ми часто "
-            "відкриваємо нові захоплення і погляди на світ.\n\n"
-            "Справжні друзі — це ті, хто приймає нас такими, як ми є, "
-            "і допомагає рости."
-        ),
-    },
-    {
-        "emoji": "🏫",
-        "title": "Школа",
-        "subtitle": "Місце, де формуються погляди",
-        "text": (
-            "Учителі, предмети, середовище — школа дає нам не тільки знання, "
-            "а й перші уявлення про світ, справедливість і відповідальність.\n\n"
-            "Школа вчить нас працювати в команді, долати труднощі, "
-            "відстоювати свою думку. Тут ми зустрічаємо людей з різних сімей, "
-            "з різними поглядами — і вчимося з ними взаємодіяти.\n\n"
-            "Іноді саме один учитель або один предмет змінює все наше "
-            "майбутнє — і ми знаходимо справу життя."
-        ),
-    },
-    {
-        "emoji": "🌍",
-        "title": "Суспільство",
-        "subtitle": "Медіа, культура, соцмережі",
-        "text": (
-            "Те, що ми бачимо в новинах, стрічках, фільмах — поступово стає "
-            "частиною наших цінностей. Суспільство задає норми і тренди.\n\n"
-            "Соцмережі формують наші уявлення про красу, успіх, стосунки. "
-            "Ми несвідомо порівнюємо себе з іншими і переймаємо чужі погляди.\n\n"
-            "Важливо вміти фільтрувати цей вплив — обирати те, що резонує "
-            "з нашими власними цінностями, а не просто «модно»."
-        ),
-    },
-    {
-        "emoji": "✅",
-        "title": "А що впливає на тебе?",
-        "subtitle": "Час пройти тест",
-        "text": (
-            "Дай відповідь на 12 коротких питань — і дізнайся, яке джерело "
-            "формує твої цінності найбільше.\n\n"
-            "Не думай занадто довго — обирай те, що перше спадає на думку. "
-            "Так результат буде найточнішим."
-        ),
-    },
-]
+st.set_page_config(
+    page_title="Що формує наші цінності?",
+    page_icon="🎯",
+    layout="centered",
+)
+
+st.markdown("""
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+.stApp { background: #0a0a0a; }
+
+.slide-card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+.slide-emoji { font-size: 3.5rem; margin-bottom: 1rem; }
+.slide-title { font-size: 2rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.5rem; }
+.slide-subtitle { font-size: 1.1rem; color: #888; margin-bottom: 1.5rem; font-weight: 600; }
+.slide-text { font-size: 1rem; color: #b0b0b0; line-height: 1.8; text-align: left; white-space: pre-line; }
+
+.progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+.question-text { font-size: 1.3rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; text-align: center; }
+</style>
+""", unsafe_allow_html=True)
+
+if "stage" not in st.session_state:
+    st.session_state.stage = "slides"
+if "slide" not in st.session_state:
+    st.session_state.slide = 0
+if "q_index" not in st.session_state:
+    st.session_state.q_index = 0
+if "answers" not in st.session_state:
+    st.session_state.answers = []
+if "user_name" not in st.session_state:
+    st.session_state.user_name = ""
+if "user_class" not in st.session_state:
+    st.session_state.user_class = ""
+
+# ===== СЛАЙДЫ =====
+if st.session_state.stage == "slides":
+    total = len(SLIDES)
+    current = st.session_state.slide
+    slide = SLIDES[current]
+
+    st.markdown(f'<p class="progress-text">Слайд {current + 1} з {total}</p>', unsafe_allow_html=True)
+    st.progress((current + 1) / total)
+
+    st.markdown(f'<div class="slide-card">'
+                f'<div class="slide-emoji">{slide["emoji"]}</div>'
+                f'<div class="slide-title">{slide["title"]}</div>'
+                f'<div class="slide-subtitle">{slide["subtitle"]}</div>'
+                f'<div class="slide-text">{slide["text"]}</div>'
+                f'</div>', unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col1:
+        if current > 0:
+            if st.button("← Назад", use_container_width=True):
+                st.session_state.slide -= 1
+                st.rerun()
+    with col3:
+        if current < total - 1:
+            if st.button("Далі →", use_container_width=True):
+                st.session_state.slide += 1
+                st.rerun()
+        else:
+            if st.button("🚀 Почати тест", use_container_width=True, type="primary"):
+                st.session_state.stage = "register"
+                st.rerun()
+
+# ===== РЕЄСТРАЦІЯ =====
+elif st.session_state.stage == "register":
+    st.markdown('<p class="progress-text">Крок 1 з 2 — Знайомство</p>', unsafe_allow_html=True)
+    st.progress(0.5)
+    st.markdown('<div class="slide-card">'
+                '<div class="slide-emoji">📝</div>'
+                '<div class="slide-title">Як тебе звати?</div>'
+                '<div class="slide-subtitle">Це потрібно, щоб показати твій результат</div>'
+                '</div>', unsafe_allow_html=True)
+
+    name = st.text_input("Твоє ім'я", value=st.session_state.user_name, placeholder="Наприклад: Марія")
+    klass = st.text_input("Клас", value=st.session_state.user_class, placeholder="Наприклад: 10-А")
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("← Назад", use_container_width=True):
+            st.session_state.stage = "slides"
+            st.rerun()
+    with col2:
+        if st.button("Почати тест →", use_container_width=True, type="primary"):
+            if name.strip() == "":
+                st.warning("Введи своє ім'я")
+            else:
+                st.session_state.user_name = name.strip()
+                st.session_state.user_class = klass.strip() if klass.strip() else "—"
+                st.session_state.stage = "quiz"
+                st.session_state.q_index = 0
+                st.session_state.answers = []
+                st.rerun()
+
+# ===== ТЕСТ =====
+elif st.session_state.stage == "quiz":
+    total_q = len(QUESTIONS)
+    q_index = st.session_state.q_index
+    question = QUESTIONS[q_index]
+
+    st.markdown(f'<p class="progress-text">Питання {q_index + 1} з {total_q}</p>', unsafe_allow_html=True)
+    st.progress((q_index + 1) / total_q)
+    st.markdown(f'<div class="slide-card"><div class="question-text">{question["text"]}</div></div>', unsafe_allow_html=True)
+
+    for i, option in enumerate(question["options"]):
+        if st.button(option, use_container_width=True, key=f"q{q_index}_o{i}"):
+            st.session_state.answers.append({"category": question["category"], "score": SCORES[i]})
+            st.session_state.q_index += 1
+            if st.session_state.q_index >= total_q:
+                st.session_state.stage = "result"
+            st.rerun()
+
+    if q_index > 0:
+        if st.button("← Попереднє питання"):
+            st.session_state.q_index -= 1
+            st.session_state.answers.pop()
+            st.rerun()
+
+# ===== РЕЗУЛЬТАТ =====
+elif st.session_state.stage == "result":
+    totals = {"family": 0, "friends": 0, "school": 0, "society": 0}
+    for ans in st.session_state.answers:
+        totals[ans["category"]] += ans["score"]
+
+    winner = max(totals, key=totals.get)
+    result = RESULTS[winner]
+    grand_total = sum(totals.values()) or 1
+    percents = {k: round(v / grand_total * 100) for k, v in totals.items()}
+
+    st.markdown(f'<div class="slide-card">'
+                f'<div class="slide-emoji">{result["emoji"]}</div>'
+                f'<div class="slide-title">{st.session_state.user_name}, твій результат:</div>'
+                f'<div class="slide-subtitle">Тебе найбільше формують: {result["title"]}</div>'
+                f'<div class="slide-text">{result["description"]}</div>'
+                f'</div>', unsafe_allow_html=True)
+
+    st.markdown("### 📊 Твій розподіл")
+    for key, label in [("family", "👨‍👩‍👧 Сім'я"), ("friends", "🧑‍🤝‍🧑 Друзі"), ("school", "🏫 Школа"), ("society", "🌍 Суспільство")]:
+        st.markdown(f"**{label} — {percents[key]}%**")
+        st.progress(percents[key] / 100)
+
+    st.markdown("---")
+    if st.button("🔄 Пройти ще раз", use_container_width=True, type="primary"):
+        st.session_state.stage = "slides"
+        st.session_state.slide = 0
+        st.session_state.q_index = 0
+        st.session_state.answers = []
+        st.session_state.user_name = ""
+        st.session_state.user_class = ""
+        st.rerun()

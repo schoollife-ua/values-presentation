@@ -15,46 +15,51 @@ footer {visibility: hidden;}
 header {visibility: hidden;}
 
 .stApp {
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background: #0a0a0a;
 }
 
 .slide-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
     border-radius: 24px;
     padding: 3rem 2.5rem;
-    backdrop-filter: blur(12px);
     text-align: center;
     margin-top: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
 }
 
 .slide-emoji { font-size: 4rem; margin-bottom: 1rem; }
-.slide-title { font-size: 2.4rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem; line-height: 1.2; }
-.slide-subtitle { font-size: 1.2rem; color: #A78BFA; margin-bottom: 1.5rem; font-weight: 600; }
-.slide-text { font-size: 1.05rem; color: #D1D5DB; line-height: 1.7; max-width: 600px; margin: 0 auto; white-space: pre-line; }
+.slide-title { font-size: 2.4rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.5rem; line-height: 1.2; }
+.slide-subtitle { font-size: 1.2rem; color: #888; margin-bottom: 1.5rem; font-weight: 600; }
+.slide-text {
+    font-size: 1.05rem;
+    color: #b0b0b0;
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
+    white-space: pre-line;
+    text-align: left;
+}
 
-.progress-text { text-align: center; color: #9CA3AF; font-size: 0.9rem; margin-bottom: 0.5rem; }
+.progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
 
 .question-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
     border-radius: 24px;
     padding: 2.5rem 2rem;
-    backdrop-filter: blur(12px);
     text-align: center;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
 }
-.question-text { font-size: 1.4rem; color: #ffffff; font-weight: 600; line-height: 1.5; }
+.question-text { font-size: 1.4rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; }
 
 .result-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
     border-radius: 24px;
     padding: 3rem 2rem;
-    backdrop-filter: blur(12px);
     text-align: center;
     margin-top: 1.5rem;
 }

@@ -1,5 +1,5 @@
 import streamlit as st
-from content import SLIDES
+from content import SLIDES, SCIENCE_SLIDE, QUOTES_SLIDE
 from questions import QUESTIONS, SCORES, RESULTS
 
 st.set_page_config(
@@ -30,7 +30,7 @@ header {visibility: hidden;}
 .progress-text { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
 .question-text { font-size: 1.3rem; color: #f0f0f0; font-weight: 600; line-height: 1.5; text-align: center; }
 
-/* ПРОГРЕСС-БАР: пустая — серая, заполненная — белая */
+/* Прогресс-бар */
 div[data-testid="stProgress"] > div > div { background-color: #3a3a3a !important; }
 .stProgress > div > div { background-color: #3a3a3a !important; }
 div[role="progressbar"] { background-color: #3a3a3a !important; }
@@ -38,7 +38,7 @@ div[data-testid="stProgress"] > div > div > div { background-color: #ffffff !imp
 .stProgress > div > div > div { background-color: #ffffff !important; }
 div[role="progressbar"] > div { background-color: #ffffff !important; }
 
-/* КНОПКИ — БЕЛЫЕ */
+/* Кнопки */
 .stButton > button,
 div[data-testid="stButton"] > button {
     background-color: #ffffff !important;
@@ -59,6 +59,51 @@ div[data-testid="stButton"] > button:focus {
     color: #0a0a0a !important;
     box-shadow: none !important;
 }
+
+/* Таблица науки */
+.sci-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+.sci-table th {
+    background: #2a2a2a;
+    color: #f0f0f0;
+    padding: 0.6rem;
+    text-align: left;
+    border-bottom: 2px solid #3a3a3a;
+}
+.sci-table td {
+    padding: 0.6rem;
+    color: #b0b0b0;
+    border-bottom: 1px solid #2a2a2a;
+    text-align: left;
+}
+.sci-table tr:hover td { background: #222; }
+.sci-conclusion {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #222;
+    border-left: 3px solid #ffffff;
+    color: #f0f0f0;
+    font-style: italic;
+    text-align: left;
+    border-radius: 8px;
+}
+
+/* Цитаты */
+.quote-block {
+    background: #222;
+    border-left: 3px solid #ffffff;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+    text-align: left;
+}
+.quote-text { color: #d0d0d0; font-size: 1rem; line-height: 1.6; font-style: italic; margin-bottom: 0.6rem; }
+.quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.95rem; }
+.quote-role { color: #888; font-size: 0.85rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -75,21 +120,61 @@ if "user_name" not in st.session_state:
 if "user_class" not in st.session_state:
     st.session_state.user_class = ""
 
+# Общее число слайдов: 6 обычных + наука + цитаты = 8
+TOTAL_SLIDES = len(SLIDES) + 2
+
 # ===== СЛАЙДЫ =====
 if st.session_state.stage == "slides":
-    total = len(SLIDES)
     current = st.session_state.slide
-    slide = SLIDES[current]
 
-    st.markdown(f'<p class="progress-text">Слайд {current + 1} з {total}</p>', unsafe_allow_html=True)
-    st.progress((current + 1) / total)
+    st.markdown(f'<p class="progress-text">Слайд {current + 1} з {TOTAL_SLIDES}</p>', unsafe_allow_html=True)
+    st.progress((current + 1) / TOTAL_SLIDES)
 
-    st.markdown(f'<div class="slide-card">'
-                f'<div class="slide-emoji">{slide["emoji"]}</div>'
-                f'<div class="slide-title">{slide["title"]}</div>'
-                f'<div class="slide-subtitle">{slide["subtitle"]}</div>'
-                f'<div class="slide-text">{slide["text"]}</div>'
-                f'</div>', unsafe_allow_html=True)
+    # Слайды 0..5 — обычные
+    if current < len(SLIDES):
+        slide = SLIDES[current]
+        st.markdown(f'<div class="slide-card">'
+                    f'<div class="slide-emoji">{slide["emoji"]}</div>'
+                    f'<div class="slide-title">{slide["title"]}</div>'
+                    f'<div class="slide-subtitle">{slide["subtitle"]}</div>'
+                    f'<div class="slide-text">{slide["text"]}</div>'
+                    f'</div>', unsafe_allow_html=True)
+
+    # Слайд 6 — наука
+    elif current == len(SLIDES):
+        sci = SCIENCE_SLIDE
+        rows_html = "".join(
+            f'<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>'
+            for a, b, c in sci["rows"]
+        )
+        st.markdown(f'<div class="slide-card">'
+                    f'<div class="slide-emoji">{sci["emoji"]}</div>'
+                    f'<div class="slide-title">{sci["title"]}</div>'
+                    f'<div class="slide-subtitle">{sci["subtitle"]}</div>'
+                    f'<table class="sci-table">'
+                    f'<tr><th>Джерело</th><th>Вік</th><th>Що відбувається</th></tr>'
+                    f'{rows_html}'
+                    f'</table>'
+                    f'<div class="sci-conclusion">💡 {sci["conclusion"]}</div>'
+                    f'</div>', unsafe_allow_html=True)
+
+    # Слайд 7 — цитаты
+    else:
+        q = QUOTES_SLIDE
+        quotes_html = "".join(
+            f'<div class="quote-block">'
+            f'<div class="quote-text">«{text}»</div>'
+            f'<div class="quote-author">{author}</div>'
+            f'<div class="quote-role">{role}</div>'
+            f'</div>'
+            for author, role, text in q["quotes"]
+        )
+        st.markdown(f'<div class="slide-card">'
+                    f'<div class="slide-emoji">{q["emoji"]}</div>'
+                    f'<div class="slide-title">{q["title"]}</div>'
+                    f'<div class="slide-subtitle">{q["subtitle"]}</div>'
+                    f'{quotes_html}'
+                    f'</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
@@ -98,7 +183,7 @@ if st.session_state.stage == "slides":
                 st.session_state.slide -= 1
                 st.rerun()
     with col3:
-        if current < total - 1:
+        if current < TOTAL_SLIDES - 1:
             if st.button("Далі →", use_container_width=True):
                 st.session_state.slide += 1
                 st.rerun()

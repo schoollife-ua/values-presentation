@@ -1,5 +1,7 @@
 import streamlit as st
-from content import SLIDES, SCIENCE_SLIDE, QUOTES_SLIDE
+import qrcode
+from io import BytesIO
+from content import SLIDES, SCIENCE_SLIDE, QUOTES_SLIDE, ACTION_SLIDE, QR_SLIDE
 from questions import QUESTIONS, SCORES, RESULTS
 
 st.set_page_config(
@@ -17,6 +19,11 @@ header {visibility: hidden;}
 
 .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 1100px !important; }
 
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 .slide-card {
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
@@ -24,15 +31,15 @@ header {visibility: hidden;}
     padding: 1.5rem 1.8rem;
     text-align: center;
     margin: 0.8rem 0;
+    animation: fadeInUp 0.6s ease-out;
 }
-.slide-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
-.slide-title { font-size: 1.6rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.3rem; }
-.slide-subtitle { font-size: 1rem; color: #888; margin-bottom: 1rem; font-weight: 600; }
-.slide-text { font-size: 0.95rem; color: #b0b0b0; line-height: 1.6; text-align: left; white-space: pre-line; }
+.slide-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; animation: fadeInUp 0.8s ease-out; }
+.slide-title { font-size: 1.6rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.3rem; animation: fadeInUp 0.7s ease-out; }
+.slide-subtitle { font-size: 1rem; color: #888; margin-bottom: 1rem; font-weight: 600; animation: fadeInUp 0.8s ease-out; }
+.slide-text { font-size: 0.95rem; color: #b0b0b0; line-height: 1.6; text-align: left; white-space: pre-line; animation: fadeInUp 0.9s ease-out; }
 .progress-text { text-align: center; color: #666; font-size: 0.85rem; margin-bottom: 0.3rem; }
 .question-text { font-size: 1.2rem; color: #f0f0f0; font-weight: 600; line-height: 1.4; text-align: center; }
 
-/* Прогресс-бар */
 div[data-testid="stProgress"] > div > div { background-color: #3a3a3a !important; }
 .stProgress > div > div { background-color: #3a3a3a !important; }
 div[role="progressbar"] { background-color: #3a3a3a !important; }
@@ -40,7 +47,6 @@ div[data-testid="stProgress"] > div > div > div { background-color: #ffffff !imp
 .stProgress > div > div > div { background-color: #ffffff !important; }
 div[role="progressbar"] > div { background-color: #ffffff !important; }
 
-/* Кнопки */
 .stButton > button,
 div[data-testid="stButton"] > button {
     background-color: #ffffff !important;
@@ -62,56 +68,25 @@ div[data-testid="stButton"] > button:focus {
     box-shadow: none !important;
 }
 
-/* Таблица науки */
-.sci-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 0.6rem;
-    font-size: 0.82rem;
-}
-.sci-table th {
-    background: #2a2a2a;
-    color: #f0f0f0;
-    padding: 0.45rem;
-    text-align: left;
-    border-bottom: 2px solid #3a3a3a;
-}
-.sci-table td {
-    padding: 0.45rem;
-    color: #b0b0b0;
-    border-bottom: 1px solid #2a2a2a;
-    text-align: left;
-}
-.sci-conclusion {
-    margin-top: 0.8rem;
-    padding: 0.7rem;
-    background: #222;
-    border-left: 3px solid #ffffff;
-    color: #f0f0f0;
-    font-style: italic;
-    text-align: left;
-    border-radius: 8px;
-    font-size: 0.85rem;
-}
+.sci-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.82rem; }
+.sci-table th { background: #2a2a2a; color: #f0f0f0; padding: 0.45rem; text-align: left; border-bottom: 2px solid #3a3a3a; }
+.sci-table td { padding: 0.45rem; color: #b0b0b0; border-bottom: 1px solid #2a2a2a; text-align: left; }
+.sci-conclusion { margin-top: 0.8rem; padding: 0.7rem; background: #222; border-left: 3px solid #ffffff; color: #f0f0f0; font-style: italic; text-align: left; border-radius: 8px; font-size: 0.85rem; }
 
-/* Цитаты */
-.quotes-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.6rem;
-    margin-top: 0.6rem;
-}
-.quote-block {
-    background: #222;
-    border-left: 3px solid #ffffff;
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
-    text-align: left;
-    margin: 0;
-}
+.quotes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.6rem; }
+.quote-block { background: #222; border-left: 3px solid #ffffff; border-radius: 10px; padding: 0.8rem 1rem; text-align: left; margin: 0; animation: fadeInUp 0.6s ease-out; }
 .quote-text { color: #d0d0d0; font-size: 0.85rem; line-height: 1.45; font-style: italic; margin-bottom: 0.4rem; }
 .quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.85rem; }
 .quote-role { color: #888; font-size: 0.75rem; }
+
+.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem; }
+.action-block { background: #222; border-radius: 12px; padding: 1rem 1.1rem; text-align: left; border: 1px solid #2a2a2a; animation: fadeInUp 0.6s ease-out; }
+.action-emoji { font-size: 1.8rem; margin-bottom: 0.4rem; }
+.action-title { color: #f0f0f0; font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+.action-text { color: #b0b0b0; font-size: 0.88rem; line-height: 1.5; }
+
+.qr-box { display: flex; justify-content: center; margin: 1rem 0; }
+.qr-message { background: #222; border-left: 3px solid #ffffff; border-radius: 10px; padding: 1rem 1.2rem; text-align: left; color: #d0d0d0; font-size: 0.95rem; line-height: 1.7; white-space: pre-line; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -128,7 +103,8 @@ if "user_name" not in st.session_state:
 if "user_class" not in st.session_state:
     st.session_state.user_class = ""
 
-TOTAL_SLIDES = len(SLIDES) + 2
+# 6 обычных + наука + цитаты + действия + QR = 10 слайдов
+TOTAL_SLIDES = len(SLIDES) + 4
 
 # ===== СЛАЙДЫ =====
 if st.session_state.stage == "slides":
@@ -148,10 +124,7 @@ if st.session_state.stage == "slides":
 
     elif current == len(SLIDES):
         sci = SCIENCE_SLIDE
-        rows_html = "".join(
-            f'<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>'
-            for a, b, c in sci["rows"]
-        )
+        rows_html = "".join(f'<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>' for a, b, c in sci["rows"])
         st.markdown(f'<div class="slide-card">'
                     f'<div class="slide-emoji">{sci["emoji"]}</div>'
                     f'<div class="slide-title">{sci["title"]}</div>'
@@ -163,7 +136,7 @@ if st.session_state.stage == "slides":
                     f'<div class="sci-conclusion">💡 {sci["conclusion"]}</div>'
                     f'</div>', unsafe_allow_html=True)
 
-    else:
+    elif current == len(SLIDES) + 1:
         q = QUOTES_SLIDE
         quotes_html = "".join(
             f'<div class="quote-block">'
@@ -178,6 +151,38 @@ if st.session_state.stage == "slides":
                     f'<div class="slide-title">{q["title"]}</div>'
                     f'<div class="slide-subtitle">{q["subtitle"]}</div>'
                     f'<div class="quotes-grid">{quotes_html}</div>'
+                    f'</div>', unsafe_allow_html=True)
+
+    elif current == len(SLIDES) + 2:
+        a = ACTION_SLIDE
+        items_html = "".join(
+            f'<div class="action-block">'
+            f'<div class="action-emoji">{emoji}</div>'
+            f'<div class="action-title">{title}</div>'
+            f'<div class="action-text">{text}</div>'
+            f'</div>'
+            for emoji, title, text in a["items"]
+        )
+        st.markdown(f'<div class="slide-card">'
+                    f'<div class="slide-emoji">{a["emoji"]}</div>'
+                    f'<div class="slide-title">{a["title"]}</div>'
+                    f'<div class="slide-subtitle">{a["subtitle"]}</div>'
+                    f'<div class="actions-grid">{items_html}</div>'
+                    f'</div>', unsafe_allow_html=True)
+
+    else:
+        qr = QR_SLIDE
+        img = qrcode.make(qr["message"])
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        buf.seek(0)
+        st.markdown(f'<div class="slide-card">'
+                    f'<div class="slide-emoji">{qr["emoji"]}</div>'
+                    f'<div class="slide-title">{qr["title"]}</div>'
+                    f'<div class="slide-subtitle">{qr["subtitle"]}</div>'
+                    f'<div class="qr-box">', unsafe_allow_html=True)
+        st.image(buf, width=220)
+        st.markdown(f'<div class="qr-message">{qr["message"]}</div>'
                     f'</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 1, 1])

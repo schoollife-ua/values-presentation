@@ -3,7 +3,7 @@ import qrcode
 from io import BytesIO
 from content import (
     SLIDES, SCIENCE_SLIDE, QUOTES_SLIDE,
-    MYTHS_1, MYTHS_2, MYTHS_3, QR_SLIDE
+    MYTH_FACTS, QR_SLIDE
 )
 from questions import QUESTIONS, SCORES, RESULTS
 
@@ -84,13 +84,33 @@ div[data-testid="stButton"] > button:hover {
 .quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.8rem; }
 .quote-role { color: #888; font-size: 0.7rem; }
 
-/* Мифы */
-.myths-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.6rem; }
-.myth-block { background: #222; border-radius: 12px; padding: 0.9rem 1rem; text-align: left; border: 1px solid #2a2a2a; }
-.myth-label { color: #ff6b6b; font-weight: 700; font-size: 0.8rem; margin-bottom: 0.3rem; }
-.myth-text { color: #e0e0e0; font-size: 0.9rem; line-height: 1.4; margin-bottom: 0.7rem; font-weight: 600; }
-.truth-label { color: #4ade80; font-weight: 700; font-size: 0.8rem; margin-bottom: 0.3rem; }
-.truth-text { color: #b0b0b0; font-size: 0.85rem; line-height: 1.5; }
+.myth-question {
+    font-size: 1.15rem;
+    color: #f0f0f0;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-top: 0.6rem;
+    text-align: center;
+}
+.myth-explanation {
+    background: #222;
+    border-left: 3px solid #4ade80;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-top: 0.8rem;
+    text-align: left;
+}
+.explanation-label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    color: #4ade80;
+}
+.explanation-text {
+    color: #d0d0d0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
 
 img { max-height: 320px !important; object-fit: contain; }
 </style>
@@ -109,8 +129,10 @@ if "user_name" not in st.session_state:
 if "user_class" not in st.session_state:
     st.session_state.user_class = ""
 
-# 6 обычных + наука + цитаты + 3 мифа + QR = 12
-TOTAL_SLIDES = len(SLIDES) + 6
+# 6 обычных + наука + цитаты + 6 мифов + QR = 15
+TOTAL_SLIDES = len(SLIDES) + 2 + len(MYTH_FACTS) + 1
+MYTH_START = len(SLIDES) + 2
+MYTH_END = MYTH_START + len(MYTH_FACTS) - 1
 
 # ===== СЛАЙДЫ =====
 if st.session_state.stage == "slides":
@@ -159,25 +181,56 @@ if st.session_state.stage == "slides":
                     f'<div class="quotes-grid">{quotes_html}</div>'
                     f'</div>', unsafe_allow_html=True)
 
-    elif current in (len(SLIDES) + 2, len(SLIDES) + 3, len(SLIDES) + 4):
-        # Слайды с мифами
-        idx = current - (len(SLIDES) + 2)
-        myth_data = [MYTHS_1, MYTHS_2, MYTHS_3][idx]
-        myths_html = "".join(
-            f'<div class="myth-block">'
-            f'<div class="myth-label">❌ МІФ</div>'
-            f'<div class="myth-text">{m["myth"]}</div>'
-            f'<div class="truth-label">✅ ПРАВДА</div>'
-            f'<div class="truth-text">{m["truth"]}</div>'
-            f'</div>'
-            for m in myth_data["myths"]
-        )
+    elif MYTH_START <= current <= MYTH_END:
+        idx = current - MYTH_START
+        fact = MYTH_FACTS[idx]
+
         st.markdown(f'<div class="slide-card">'
-                    f'<div class="slide-emoji">{myth_data["emoji"]}</div>'
-                    f'<div class="slide-title">{myth_data["title"]}</div>'
-                    f'<div class="slide-subtitle">{myth_data["subtitle"]}</div>'
-                    f'<div class="myths-grid">{myths_html}</div>'
+                    f'<div class="slide-emoji">❓</div>'
+                    f'<div class="slide-title">Міф чи правда?</div>'
+                    f'<div class="slide-subtitle">Питання {idx + 1} з {len(MYTH_FACTS)}</div>'
+                    f'<div class="myth-question">{fact["text"]}</div>'
                     f'</div>', unsafe_allow_html=True)
+
+        answered_key = f"answered_{idx}"
+        choice_key = f"choice_{idx}"
+
+        if answered_key not in st.session_state:
+            st.session_state[answered_key] = False
+
+        if not st.session_state[answered_key]:
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.button("❌ Міф", use_container_width=True, key=f"myth_{idx}"):
+                    st.session_state[choice_key] = "myth"
+                    st.session_state[answered_key] = True
+                    st.rerun()
+            with c2:
+                if st.button("✅ Правда", use_container_width=True, key=f"truth_{idx}"):
+                    st.session_state[choice_key] = "truth"
+                    st.session_state[answered_key] = True
+                    st.rerun()
+        else:
+            user_choice = st.session_state[choice_key]
+            correct = "myth" if fact["is_myth"] else "truth"
+            is_correct = (user_choice == correct)
+
+            if is_correct:
+                st.success("🎉 Правильно!")
+            else:
+                st.error("😅 Не зовсім...")
+
+            label = "✅ Це МІФ" if fact["is_myth"] else "✅ Це ПРАВДА"
+            st.markdown(f'<div class="myth-explanation">'
+                        f'<div class="explanation-label">{label}</div>'
+                        f'<div class="explanation-text">{fact["explanation"]}</div>'
+                        f'</div>', unsafe_allow_html=True)
+
+            if st.button("Наступний →", use_container_width=True, type="primary", key=f"next_{idx}"):
+                st.session_state[answered_key] = False
+                if current < TOTAL_SLIDES - 1:
+                    st.session_state.slide += 1
+                st.rerun()
 
     else:
         qr = QR_SLIDE
@@ -194,21 +247,24 @@ if st.session_state.stage == "slides":
         with col2:
             st.image(buf, use_container_width=True)
 
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col1:
-        if current > 0:
-            if st.button("← Назад", use_container_width=True):
-                st.session_state.slide -= 1
-                st.rerun()
-    with col3:
-        if current < TOTAL_SLIDES - 1:
-            if st.button("Далі →", use_container_width=True):
-                st.session_state.slide += 1
-                st.rerun()
-        else:
-            if st.button("🚀 Почати тест", use_container_width=True, type="primary"):
-                st.session_state.stage = "register"
-                st.rerun()
+    # Нижние кнопки — только для НЕ-мифных слайдов
+    is_myth_slide = MYTH_START <= current <= MYTH_END
+    if not is_myth_slide:
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            if current > 0:
+                if st.button("← Назад", use_container_width=True):
+                    st.session_state.slide -= 1
+                    st.rerun()
+        with col3:
+            if current < TOTAL_SLIDES - 1:
+                if st.button("Далі →", use_container_width=True):
+                    st.session_state.slide += 1
+                    st.rerun()
+            else:
+                if st.button("🚀 Почати тест", use_container_width=True, type="primary"):
+                    st.session_state.stage = "register"
+                    st.rerun()
 
 # ===== РЕЄСТРАЦІЯ =====
 elif st.session_state.stage == "register":

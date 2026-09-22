@@ -1,7 +1,10 @@
 import streamlit as st
 import qrcode
 from io import BytesIO
-from content import SLIDES, SCIENCE_SLIDE, QUOTES_SLIDE, ACTION_SLIDE, QR_SLIDE
+from content import (
+    SLIDES, SCIENCE_SLIDE, QUOTES_SLIDE,
+    MYTHS_1, MYTHS_2, MYTHS_3, QR_SLIDE
+)
 from questions import QUESTIONS, SCORES, RESULTS
 
 st.set_page_config(
@@ -81,13 +84,14 @@ div[data-testid="stButton"] > button:hover {
 .quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.8rem; }
 .quote-role { color: #888; font-size: 0.7rem; }
 
-.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.6rem; }
-.action-block { background: #222; border-radius: 10px; padding: 0.7rem 0.9rem; text-align: left; border: 1px solid #2a2a2a; }
-.action-emoji { font-size: 1.4rem; margin-bottom: 0.2rem; }
-.action-title { color: #f0f0f0; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
-.action-text { color: #b0b0b0; font-size: 0.8rem; line-height: 1.4; }
+/* Мифы */
+.myths-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.6rem; }
+.myth-block { background: #222; border-radius: 12px; padding: 0.9rem 1rem; text-align: left; border: 1px solid #2a2a2a; }
+.myth-label { color: #ff6b6b; font-weight: 700; font-size: 0.8rem; margin-bottom: 0.3rem; }
+.myth-text { color: #e0e0e0; font-size: 0.9rem; line-height: 1.4; margin-bottom: 0.7rem; font-weight: 600; }
+.truth-label { color: #4ade80; font-weight: 700; font-size: 0.8rem; margin-bottom: 0.3rem; }
+.truth-text { color: #b0b0b0; font-size: 0.85rem; line-height: 1.5; }
 
-/* QR — ограничиваем размер */
 img { max-height: 320px !important; object-fit: contain; }
 </style>
 """, unsafe_allow_html=True)
@@ -105,7 +109,8 @@ if "user_name" not in st.session_state:
 if "user_class" not in st.session_state:
     st.session_state.user_class = ""
 
-TOTAL_SLIDES = len(SLIDES) + 4
+# 6 обычных + наука + цитаты + 3 мифа + QR = 12
+TOTAL_SLIDES = len(SLIDES) + 6
 
 # ===== СЛАЙДЫ =====
 if st.session_state.stage == "slides":
@@ -154,21 +159,24 @@ if st.session_state.stage == "slides":
                     f'<div class="quotes-grid">{quotes_html}</div>'
                     f'</div>', unsafe_allow_html=True)
 
-    elif current == len(SLIDES) + 2:
-        a = ACTION_SLIDE
-        items_html = "".join(
-            f'<div class="action-block">'
-            f'<div class="action-emoji">{emoji}</div>'
-            f'<div class="action-title">{title}</div>'
-            f'<div class="action-text">{text}</div>'
+    elif current in (len(SLIDES) + 2, len(SLIDES) + 3, len(SLIDES) + 4):
+        # Слайды с мифами
+        idx = current - (len(SLIDES) + 2)
+        myth_data = [MYTHS_1, MYTHS_2, MYTHS_3][idx]
+        myths_html = "".join(
+            f'<div class="myth-block">'
+            f'<div class="myth-label">❌ МІФ</div>'
+            f'<div class="myth-text">{m["myth"]}</div>'
+            f'<div class="truth-label">✅ ПРАВДА</div>'
+            f'<div class="truth-text">{m["truth"]}</div>'
             f'</div>'
-            for emoji, title, text in a["items"]
+            for m in myth_data["myths"]
         )
         st.markdown(f'<div class="slide-card">'
-                    f'<div class="slide-emoji">{a["emoji"]}</div>'
-                    f'<div class="slide-title">{a["title"]}</div>'
-                    f'<div class="slide-subtitle">{a["subtitle"]}</div>'
-                    f'<div class="actions-grid">{items_html}</div>'
+                    f'<div class="slide-emoji">{myth_data["emoji"]}</div>'
+                    f'<div class="slide-title">{myth_data["title"]}</div>'
+                    f'<div class="slide-subtitle">{myth_data["subtitle"]}</div>'
+                    f'<div class="myths-grid">{myths_html}</div>'
                     f'</div>', unsafe_allow_html=True)
 
     else:

@@ -17,7 +17,11 @@ footer {visibility: hidden;}
 header {visibility: hidden;}
 .stApp { background: #0a0a0a; }
 
-.block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 1100px !important; }
+.block-container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    max-width: 1000px !important;
+}
 
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
@@ -27,18 +31,21 @@ header {visibility: hidden;}
 .slide-card {
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
-    border-radius: 20px;
-    padding: 1.5rem 1.8rem;
+    border-radius: 18px;
+    padding: 1.2rem 1.5rem;
     text-align: center;
-    margin: 0.8rem 0;
+    margin: 0.5rem 0;
     animation: fadeInUp 0.6s ease-out;
 }
-.slide-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; animation: fadeInUp 0.8s ease-out; }
-.slide-title { font-size: 1.6rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.3rem; animation: fadeInUp 0.7s ease-out; }
-.slide-subtitle { font-size: 1rem; color: #888; margin-bottom: 1rem; font-weight: 600; animation: fadeInUp 0.8s ease-out; }
-.slide-text { font-size: 0.95rem; color: #b0b0b0; line-height: 1.6; text-align: left; white-space: pre-line; animation: fadeInUp 0.9s ease-out; }
-.progress-text { text-align: center; color: #666; font-size: 0.85rem; margin-bottom: 0.3rem; }
-.question-text { font-size: 1.2rem; color: #f0f0f0; font-weight: 600; line-height: 1.4; text-align: center; }
+.slide-emoji { font-size: 2rem; margin-bottom: 0.3rem; }
+.slide-title { font-size: 1.4rem; font-weight: 800; color: #f0f0f0; margin-bottom: 0.2rem; }
+.slide-subtitle { font-size: 0.9rem; color: #888; margin-bottom: 0.6rem; font-weight: 600; }
+.slide-text { font-size: 0.88rem; color: #b0b0b0; line-height: 1.5; text-align: left; white-space: pre-line; }
+.progress-text { text-align: center; color: #666; font-size: 0.8rem; margin-bottom: 0.2rem; }
+.question-text { font-size: 1.1rem; color: #f0f0f0; font-weight: 600; line-height: 1.4; text-align: center; }
+
+.element-container { margin-bottom: 0.2rem !important; }
+.stProgress { margin-bottom: 0.3rem !important; }
 
 div[data-testid="stProgress"] > div > div { background-color: #3a3a3a !important; }
 .stProgress > div > div { background-color: #3a3a3a !important; }
@@ -52,8 +59,9 @@ div[data-testid="stButton"] > button {
     background-color: #ffffff !important;
     color: #0a0a0a !important;
     border: 1px solid #ffffff !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
+    padding: 0.4rem 1rem !important;
 }
 .stButton > button:hover,
 div[data-testid="stButton"] > button:hover {
@@ -61,29 +69,26 @@ div[data-testid="stButton"] > button:hover {
     color: #0a0a0a !important;
     border-color: #d0d0d0 !important;
 }
-.stButton > button:focus,
-div[data-testid="stButton"] > button:focus {
-    background-color: #ffffff !important;
-    color: #0a0a0a !important;
-    box-shadow: none !important;
-}
 
-.sci-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.82rem; }
-.sci-table th { background: #2a2a2a; color: #f0f0f0; padding: 0.45rem; text-align: left; border-bottom: 2px solid #3a3a3a; }
-.sci-table td { padding: 0.45rem; color: #b0b0b0; border-bottom: 1px solid #2a2a2a; text-align: left; }
-.sci-conclusion { margin-top: 0.8rem; padding: 0.7rem; background: #222; border-left: 3px solid #ffffff; color: #f0f0f0; font-style: italic; text-align: left; border-radius: 8px; font-size: 0.85rem; }
+.sci-table { width: 100%; border-collapse: collapse; margin-top: 0.4rem; font-size: 0.78rem; }
+.sci-table th { background: #2a2a2a; color: #f0f0f0; padding: 0.4rem; text-align: left; border-bottom: 2px solid #3a3a3a; }
+.sci-table td { padding: 0.4rem; color: #b0b0b0; border-bottom: 1px solid #2a2a2a; text-align: left; }
+.sci-conclusion { margin-top: 0.6rem; padding: 0.6rem; background: #222; border-left: 3px solid #ffffff; color: #f0f0f0; font-style: italic; text-align: left; border-radius: 8px; font-size: 0.8rem; }
 
-.quotes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.6rem; }
-.quote-block { background: #222; border-left: 3px solid #ffffff; border-radius: 10px; padding: 0.8rem 1rem; text-align: left; margin: 0; animation: fadeInUp 0.6s ease-out; }
-.quote-text { color: #d0d0d0; font-size: 0.85rem; line-height: 1.45; font-style: italic; margin-bottom: 0.4rem; }
-.quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.85rem; }
-.quote-role { color: #888; font-size: 0.75rem; }
+.quotes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+.quote-block { background: #222; border-left: 3px solid #ffffff; border-radius: 10px; padding: 0.6rem 0.9rem; text-align: left; margin: 0; }
+.quote-text { color: #d0d0d0; font-size: 0.8rem; line-height: 1.4; font-style: italic; margin-bottom: 0.3rem; }
+.quote-author { color: #f0f0f0; font-weight: 700; font-size: 0.8rem; }
+.quote-role { color: #888; font-size: 0.7rem; }
 
-.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem; }
-.action-block { background: #222; border-radius: 12px; padding: 1rem 1.1rem; text-align: left; border: 1px solid #2a2a2a; animation: fadeInUp 0.6s ease-out; }
-.action-emoji { font-size: 1.8rem; margin-bottom: 0.4rem; }
-.action-title { color: #f0f0f0; font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
-.action-text { color: #b0b0b0; font-size: 0.88rem; line-height: 1.5; }
+.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.6rem; }
+.action-block { background: #222; border-radius: 10px; padding: 0.7rem 0.9rem; text-align: left; border: 1px solid #2a2a2a; }
+.action-emoji { font-size: 1.4rem; margin-bottom: 0.2rem; }
+.action-title { color: #f0f0f0; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
+.action-text { color: #b0b0b0; font-size: 0.8rem; line-height: 1.4; }
+
+/* QR — ограничиваем размер */
+img { max-height: 320px !important; object-fit: contain; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -177,7 +182,7 @@ if st.session_state.stage == "slides":
                     f'<div class="slide-title">{qr["title"]}</div>'
                     f'<div class="slide-subtitle">{qr["subtitle"]}</div>'
                     f'</div>', unsafe_allow_html=True)
-        col1, col2, col3 = st.columns([1, 2, 1])
+        col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
             st.image(buf, use_container_width=True)
 

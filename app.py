@@ -84,9 +84,6 @@ div[data-testid="stButton"] > button:focus {
 .action-emoji { font-size: 1.8rem; margin-bottom: 0.4rem; }
 .action-title { color: #f0f0f0; font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
 .action-text { color: #b0b0b0; font-size: 0.88rem; line-height: 1.5; }
-
-.qr-box { display: flex; justify-content: center; margin: 1rem 0; }
-.qr-message { background: #222; border-left: 3px solid #ffffff; border-radius: 10px; padding: 1rem 1.2rem; text-align: left; color: #d0d0d0; font-size: 0.95rem; line-height: 1.7; white-space: pre-line; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -103,7 +100,6 @@ if "user_name" not in st.session_state:
 if "user_class" not in st.session_state:
     st.session_state.user_class = ""
 
-# 6 обычных + наука + цитаты + действия + QR = 10 слайдов
 TOTAL_SLIDES = len(SLIDES) + 4
 
 # ===== СЛАЙДЫ =====
@@ -176,14 +172,14 @@ if st.session_state.stage == "slides":
         buf = BytesIO()
         img.save(buf, format="PNG")
         buf.seek(0)
-        st.markdown(f'<div class="slide-card">'
+        st.markdown(f'<div class="slide-card" style="text-align:center;">'
                     f'<div class="slide-emoji">{qr["emoji"]}</div>'
                     f'<div class="slide-title">{qr["title"]}</div>'
                     f'<div class="slide-subtitle">{qr["subtitle"]}</div>'
-                    f'<div class="qr-box">', unsafe_allow_html=True)
-        st.image(buf, width=220)
-        st.markdown(f'<div class="qr-message">{qr["message"]}</div>'
                     f'</div>', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.image(buf, use_container_width=True)
 
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
